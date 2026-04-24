@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PHARMEGIC - Wholesale Raw Materials</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<base target="_blank">
+</head>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-inner">
+                <a href="#" class="logo">PHARMEGIC</a>
+
+                <div class="header-search">
+                    <input type="text" id="searchInput" placeholder="Mahsulot qidirish..." data-uz="Mahsulot qidirish..." data-ru="Поиск товаров..." data-en="Search products...">
+                    <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
+                </div>
+
+                <div class="header-actions">
+                    <div class="lang-switcher">
+                        <button class="lang-btn active" onclick="setLang('uz')">UZ</button>
+                        <button class="lang-btn" onclick="setLang('ru')">RU</button>
+                        <button class="lang-btn" onclick="setLang('en')">EN</button>
+                    </div>
+                    <div class="cart-icon" onclick="toggleCart()">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </div>
+                    <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-inner">
+                <a href="#home" data-uz="Bosh sahifa" data-ru="Главная" data-en="Home">Bosh sahifa</a>
+                <a href="#stock" data-uz="Omborda" data-ru="В наличии" data-en="In Stock">Omborda</a>
+                <a href="#sourcing" data-uz="Topib berish" data-ru="Поиск" data-en="Sourcing">Topib berish</a>
+                <a href="#about" data-uz="Biz haqimizda" data-ru="О нас" data-en="About">Biz haqimizda</a>
+                <a href="#contact" data-uz="Aloqa" data-ru="Контакты" data-en="Contact">Aloqa</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-search">
+            <input type="text" id="mobileSearchInput" placeholder="Mahsulot qidirish...">
+            <button onclick="searchProductsMobile()"><i class="fas fa-search"></i></button>
+        </div>
+        <nav class="mobile-nav">
+            <a href="#home" onclick="toggleMenu()" data-uz="Bosh sahifa" data-ru="Главная" data-en="Home">Bosh sahifa</a>
+            <a href="#stock" onclick="toggleMenu()" data-uz="Omborda" data-ru="В наличии" data-en="In Stock">Omborda</a>
+            <a href="#sourcing" onclick="toggleMenu()" data-uz="Topib berish" data-ru="Поиск" data-en="Sourcing">Topib berish</a>
+            <a href="#about" onclick="toggleMenu()" data-uz="Biz haqimizda" data-ru="О нас" data-en="About">Biz haqimizda</a>
+            <a href="#contact" onclick="toggleMenu()" data-uz="Aloqa" data-ru="Контакты" data-en="Contact">Aloqa</a>
+        </nav>
+        <div class="mobile-cart-btn" onclick="toggleCart()">
+            <i class="fas fa-shopping-cart"></i>
+            <span data-uz="Savat" data-ru="Корзина" data-en="Cart">Savat</span>
+            <span class="cart-count-mobile" id="cartCountMobile">0</span>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 data-uz="O'zbekistonda ishlab chiqarish uchun ulgurji hom-ashyo" 
+                    data-ru="Оптовое сырье для производства в Узбекистане" 
+                    data-en="Wholesale Raw Materials for Production in Uzbekistan">
+                    O'zbekistonda ishlab chiqarish uchun ulgurji hom-ashyo
+                </h1>
+                <p data-uz="Qo'shimchalar, oziq-ovqat va farmatsevtika hom-ashyolari mahalliy ombor va global manbalardan. Tez yetkazib berish. Faqat ulgurji." 
+                   data-ru="Сырье для добавок, пищевых и фармацевтических продуктов из местного склада и глобальных источников. Быстрая доставка. Только опт." 
+                   data-en="Supplements, food and pharmaceutical raw materials from local stock and global sourcing. Fast delivery. Wholesale only.">
+                    Qo'shimchalar, oziq-ovqat va farmatsevtika hom-ashyolari mahalliy ombor va global manbalardan. Tez yetkazib berish. Faqat ulgurji.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#stock" class="btn btn-red" data-uz="Omborni ko'rish" data-ru="Смотреть склад" data-en="View Stock">Omborni ko'rish</a>
+                    <a href="#contact" class="btn btn-outline" data-uz="Bog'lanish" data-ru="Связаться" data-en="Contact">Bog'lanish</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stock Section -->
+    <section id="stock" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 data-uz="O'zbekistondagi omborda mavjud" data-ru="В наличии на складе в Узбекистане" data-en="Available from Stock in Uzbekistan">O'zbekistondagi omborda mavjud</h2>
+                <p data-uz="Omborimizdan tez yetkazib berish uchun hom-ashyolar. Ishlab chiqaruvchilar va distribyutorlar uchun ulgurji ta'minot." 
+                   data-ru="Сырье для быстрой доставки со склада. Оптовые поставки для производителей и дистрибьюторов." 
+                   data-en="Raw materials available for fast delivery from our warehouse. Wholesale supply for manufacturers and distributors.">
+                    Omborimizdan tez yetkazib berish uchun hom-ashyolar. Ishlab chiqaruvchilar va distribyutorlar uchun ulgurji ta'minot.
+                </p>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters">
+                <button class="filter-btn active" onclick="filterProducts('all')" data-uz="Barchasi" data-ru="Все" data-en="All">Barchasi</button>
+                <button class="filter-btn" onclick="filterProducts('oil')" data-uz="Moylar" data-ru="Масла" data-en="Oils">Moylar</button>
+                <button class="filter-btn" onclick="filterProducts('chemical')" data-uz="Kimyoviy" data-ru="Химические" data-en="Chemical">Kimyoviy</button>
+                <button class="filter-btn" onclick="filterProducts('excipient')" data-uz="Yordamchi" data-ru="Вспомогательные" data-en="Excipients">Yordamchi</button>
+            </div>
+
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be loaded by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Sourcing Section -->
+    <section id="sourcing" class="section section-gray">
+        <div class="container">
+            <div class="sourcing-content">
+                <h2 data-uz="Maxsus hom-ashyo kerakmi?" data-ru="Нужно специальное сырье?" data-en="Need a specific raw material?">Maxsus hom-ashyo kerakmi?</h2>
+                <p data-uz="Biz AQSh, Yevropa va Osiyodan murakkab va noyob komponentlarni mijoz talabiga ko'ra topib beramiz." 
+                   data-ru="Мы находим сложные и редкие ингредиенты из США, Европы и Азии по запросу клиента." 
+                   data-en="We source complex and rare ingredients from USA, Europe and Asia under client request.">
+                    Biz AQSh, Yevropa va Osiyodan murakkab va noyob komponentlarni mijoz talabiga ko'ra topib beramiz.
+                </p>
+
+                <form class="sourcing-form" id="sourcingForm" onsubmit="submitSourcingRequest(event)">
+                    <div class="form-group">
+                        <input type="text" id="sourcingProduct" required placeholder=" " 
+                               data-uz-placeholder="Mahsulot nomi" data-ru-placeholder="Название продукта" data-en-placeholder="Product name">
+                        <label data-uz="Mahsulot nomi" data-ru="Название продукта" data-en="Product name">Mahsulot nomi</label>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="number" id="sourcingQuantity" required placeholder=" " min="1">
+                            <label data-uz="Miqdor (kg)" data-ru="Количество (кг)" data-en="Quantity (kg)">Miqdor (kg)</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="sourcingCompany" required placeholder=" ">
+                            <label data-uz="Kompaniya nomi" data-ru="Название компании" data-en="Company name">Kompaniya nomi</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" id="sourcingPhone" required placeholder=" " value="+998">
+                        <label data-uz="Telefon raqami" data-ru="Номер телефона" data-en="Phone number">Telefon raqami</label>
+                    </div>
+                    <button type="submit" class="btn btn-red btn-large" data-uz="So'rov yuborish" data-ru="Отправить запрос" data-en="Send request">So'rov yuborish</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Order -->
+    <section class="section">
+        <div class="container">
+            <h2 class="text-center" data-uz="Qanday buyurtma berish mumkin" data-ru="Как сделать заказ" data-en="How to order">Qanday buyurtma berish mumkin</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3 data-uz="Mahsulotni tanlang" data-ru="Выберите продукт" data-en="Select product">Mahsulotni tanlang</h3>
+                    <p data-uz="Katalogdan kerakli mahsulotni toping va miqdorni belgilang" 
+                       data-ru="Найдите нужный продукт в каталоге и укажите количество" 
+                       data-en="Find the product in catalog and specify quantity">Katalogdan kerakli mahsulotni toping va miqdorni belgilang</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3 data-uz="Savatga qo'shing" data-ru="Добавьте в корзину" data-en="Add to cart">Savatga qo'shing</h3>
+                    <p data-uz="Buyurtma ma'lumotlarini to'ldiring va tasdiqlang" 
+                       data-ru="Заполните данные заказа и подтвердите" 
+                       data-en="Fill order details and confirm">Buyurtma ma'lumotlarini to'ldiring va tasdiqlang</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3 data-uz="Yetkazib berish" data-ru="Доставка" data-en="Delivery">Yetkazib berish</h3>
+                    <p data-uz="O'zbekiston bo'ylab tez yetkazib berish. Transport kompaniyasi orqali." 
+                       data-ru="Быстрая доставка по Узбекистану. Через транспортную компанию." 
+                       data-en="Fast delivery across Uzbekistan. Via transport company.">O'zbekiston bo'ylab tez yetkazib berish. Transport kompaniyasi orqali.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section section-gray">
+        <div class="container">
+            <div class="about-content">
+                <h2 data-uz="PHARMEGIC haqida" data-ru="О PHARMEGIC" data-en="About PHARMEGIC">PHARMEGIC haqida</h2>
+                <p data-uz="PHARMEGIC MCHJ O'zbekistonda qo'shimchalar, oziq-ovqat va farmatsevtika ishlab chiqaruvchilari uchun hom-ashyo yetkazib beruvchisidir." 
+                   data-ru="PHARMEGIC МЧЖ — поставщик сырья для производителей добавок, пищевых и фармацевтических продуктов в Узбекистане." 
+                   data-en="PHARMEGIC LLC is a raw materials supplier for supplement, food and pharmaceutical manufacturers in Uzbekistan.">
+                    PHARMEGIC MCHJ O'zbekistonda qo'shimchalar, oziq-ovqat va farmatsevtika ishlab chiqaruvchilari uchun hom-ashyo yetkazib beruvchisidir.
+                </p>
+                <p data-uz="Biz mahalliy ombordan mahsulotlar yetkazib beramiz va AQSh, Yevropa va Osiyodagi xalqaro hamkorlarimiz orqali maxsus ingredientlarni global manbalardan topib beramiz." 
+                   data-ru="Мы поставляем продукцию из местного склада и находим специальные ингредиенты из глобальных источников через наших международных партнеров в США, Европе и Азии." 
+                   data-en="We supply products from local stock and source special ingredients globally through our international partners in the USA, Europe and Asia.">
+                    Biz mahalliy ombordan mahsulotlar yetkazib beramiz va AQSh, Yevropa va Osiyodagi xalqaro hamkorlarimiz orqali maxsus ingredientlarni global manbalardan topib beramiz.
+                </p>
+                <p data-uz="Biz faqat ulgurji B2B mijozlar bilan ishlaymiz." data-ru="Мы работаем только с оптовыми B2B клиентами." data-en="We work only with wholesale B2B clients.">
+                    <strong>Biz faqat ulgurji B2B mijozlar bilan ishlaymiz.</strong>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <div class="contact-content">
+                <h2 data-uz="Biz bilan bog'laning" data-ru="Свяжитесь с нами" data-en="Contact us">Biz bilan bog'laning</h2>
+                <p data-uz="Narxlar va mavjudlik uchun biz bilan bog'laning." 
+                   data-ru="Для уточнения цен и наличия свяжитесь с нами." 
+                   data-en="For prices and availability please contact us.">
+                    Narxlar va mavjudlik uchun biz bilan bog'laning.
+                </p>
+
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <strong data-uz="Telefon:" data-ru="Телефон:" data-en="Phone:">Telefon:</strong>
+                            <a href="tel:+998953000021">+998 95 300 00 21</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <strong>Email:</strong>
+                            <a href="mailto:pharmegic@mail.ru">pharmegic@mail.ru</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <strong data-uz="Manzil:" data-ru="Адрес:" data-en="Address:">Manzil:</strong>
+                            <span data-uz="Namangan sh. Boburshox ko’chasi, 132 uy" data-ru="Город Наманган, улица Бабуршок, дом 132" data-en="Namangan city, Baburshok street, house 132">Namangan sh. Boburshox ko’chasi, 132 uy</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-telegram"></i>
+                        <div>
+                            <strong>Telegram:</strong>
+                            <a href="https://t.me/PharmegicUz" target="_blank">@PharmegicUz</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>PHARMEGIC MCHJ</h3>
+                    <p data-uz="Ulgurji hom-ashyo yetkazib beruvchi" data-ru="Поставщик оптового сырья" data-en="Wholesale raw materials supplier">Ulgurji hom-ashyo yetkazib beruvchi</p>
+                    <p>O'zbekiston</p>
+                </div>
+                <div class="footer-links">
+                    <a href="https://t.me/PharmegicUz" target="_blank"><i class="fab fa-telegram"></i> Telegram</a>
+                    <a href="tel:+998953000021"><i class="fas fa-phone"></i> Phone</a>
+                    <a href="mailto:pharmegic@mail.ru"><i class="fas fa-envelope"></i> Email</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 PHARMEGIC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Product Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content modal-large">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-body" id="modalBody">
+                <!-- Content loaded by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3 data-uz="Savat" data-ru="Корзина" data-en="Cart">Savat</h3>
+            <button class="cart-close" onclick="toggleCart()">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items loaded by JS -->
+        </div>
+        <div class="cart-footer" id="cartFooter">
+            <div class="cart-total">
+                <span data-uz="Jami:" data-ru="Итого:" data-en="Total:">Jami:</span>
+                <strong id="cartTotal">0</strong>
+            </div>
+            <button class="btn btn-red btn-block" onclick="openUserTypeModal()" data-uz="Buyurtma berish" data-ru="Оформить заказ" data-en="Place order">Buyurtma berish</button>
+        </div>
+    </div>
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+
+    <!-- User Type Selection Modal -->
+    <div class="modal" id="userTypeModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeUserTypeModal()">&times;</button>
+            <div class="modal-body">
+                <h2 class="text-center" data-uz="Kim sifatida davom etasiz?" data-ru="Как вы хотите продолжить?" data-en="How would you like to continue?">Kim sifatida davom etasiz?</h2>
+                <p class="text-center text-muted" data-uz="Iltimos, shaxs turini tanlang" data-ru="Пожалуйста, выберите тип лица" data-en="Please select user type">Iltimos, shaxs turini tanlang</p>
+
+                <div class="user-type-options">
+                    <div class="user-type-card" onclick="selectUserType('individual')">
+                        <div class="user-type-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 data-uz="Jismoniy shaxs" data-ru="Физическое лицо" data-en="Individual">Jismoniy shaxs</h3>
+                        <p data-uz="Click orqali to'lov" data-ru="Оплата через Click" data-en="Payment via Click">Click orqali to'lov</p>
+                        <span class="user-type-badge" data-uz="Tez va qulay" data-ru="Быстро и удобно" data-en="Fast & easy">Tez va qulay</span>
+                    </div>
+
+                    <div class="user-type-card" onclick="selectUserType('legal')">
+                        <div class="user-type-icon legal">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3 data-uz="Yuridik shaxs" data-ru="Юридическое лицо" data-en="Legal entity">Yuridik shaxs</h3>
+                        <p data-uz="Dogovor orqali hisob-kitob" data-ru="Оплата по договору" data-en="Payment by contract">Dogovor orqali hisob-kitob</p>
+                        <span class="user-type-badge legal" data-uz="Rasmiy hujjatlar" data-ru="Официальные документы" data-en="Official documents">Rasmiy hujjatlar</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Individual Checkout Modal (Click Payment) - EMAIL REMOVED -->
+    
+    <!-- Individual Checkout Modal (Click Payment) -->
+    <div class="modal" id="individualCheckoutModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeIndividualCheckout()">&times;</button>
+            <div class="modal-body">
+                <div class="checkout-header">
+                    <div class="checkout-icon individual">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h2 data-uz="Jismoniy shaxs uchun buyurtma" data-ru="Заказ для физического лица" data-en="Order for individual">Jismoniy shaxs uchun buyurtma</h2>
+                    <p class="payment-method" data-uz="To'lov usuli: Click" data-ru="Способ оплаты: Click" data-en="Payment method: Click">To'lov usuli: Click</p>
+                </div>
+
+                <form id="individualCheckoutForm" onsubmit="submitIndividualOrder(event)">
+                    <div class="form-group">
+                        <input type="text" id="individualName" required placeholder=" ">
+                        <label data-uz="Ism familiya" data-ru="ФИО" data-en="Full name">Ism familiya</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" id="individualPhone" required placeholder=" " value="+998">
+                        <label data-uz="Telefon raqami" data-ru="Номер телефона" data-en="Phone number">Telefon raqami</label>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="individualAddress" rows="2" required placeholder=" "></textarea>
+                        <label data-uz="Yetkazib berish manzili" data-ru="Адрес доставки" data-en="Delivery address">Yetkazib berish manzili</label>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="individualComment" rows="2" placeholder=" "></textarea>
+                        <label data-uz="Izoh (ixtiyoriy)" data-ru="Комментарий (необязательно)" data-en="Comment (optional)">Izoh (ixtiyoriy)</label>
+                    </div>
+
+                    <div class="order-summary" id="individualOrderSummary">
+                        <!-- Order summary -->
+                    </div>
+
+                    <!-- O'CHIRILDI: Bu bo'lim endi kerak emas -->
+                    <!-- 
+                    <div class="payment-info">
+                        ...
+                    </div> 
+                    -->
+
+                    <button type="submit" class="btn btn-red btn-large btn-block" data-uz="Buyurtma berish va to'lov" data-ru="Оформить заказ и оплатить" data-en="Place order and pay">
+                        <i class="fas fa-lock"></i> Buyurtma berish va to'lov
+                    </button>
+                    
+                    <p style="text-align: center; margin-top: 12px; font-size: 13px; color: #666;">
+                        <i class="fas fa-shield-alt"></i> 
+                        <span data-uz="Click orqali xavfsiz to'lov" data-ru="Безопасная оплата через Click" data-en="Secure payment via Click">Click orqali xavfsiz to'lov</span>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Legal Checkout Modal (Contract) - EMAIL REMOVED -->
+    <div class="modal" id="legalCheckoutModal">
+        <div class="modal-content modal-large">
+            <button class="modal-close" onclick="closeLegalCheckout()">&times;</button>
+            <div class="modal-body">
+                <div class="checkout-header">
+                    <div class="checkout-icon legal">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h2 data-uz="Yuridik shaxs uchun buyurtma" data-ru="Заказ для юридического лица" data-en="Order for legal entity">Yuridik shaxs uchun buyurtma</h2>
+                    <p class="payment-method" data-uz="To'lov usuli: Bank o'tkazmasi (Dogovor)" data-ru="Способ оплаты: Банковский перевод (Договор)" data-en="Payment method: Bank transfer (Contract)">To'lov usuli: Bank o'tkazmasi (Dogovor)</p>
+                </div>
+
+                <form id="legalCheckoutForm" onsubmit="submitLegalOrder(event)">
+                    <div class="form-sections">
+                        <div class="form-section">
+                            <h4 data-uz="Kompaniya ma'lumotlari" data-ru="Данные компании" data-en="Company information">Kompaniya ma'lumotlari</h4>
+                            <div class="form-group">
+                                <input type="text" id="legalCompanyName" required placeholder=" ">
+                                <label data-uz="Kompaniya nomi (to'liq)" data-ru="Название компании (полное)" data-en="Company name (full)">Kompaniya nomi (to'liq)</label>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="text" id="legalInn" required placeholder=" ">
+                                    <label data-uz="INN" data-ru="ИНН" data-en="TIN">INN</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="legalAccount" required placeholder=" ">
+                                    <label data-uz="Hisob raqam" data-ru="Расчетный счет" data-en="Account number">Hisob raqam</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="legalBank" required placeholder=" ">
+                                <label data-uz="Bank nomi" data-ru="Название банка" data-en="Bank name">Bank nomi</label>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="text" id="legalMfo" required placeholder=" ">
+                                    <label data-uz="MFO" data-ru="МФО" data-en="MFI">MFO</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="legalOked" placeholder=" ">
+                                    <label data-uz="OKED (ixtiyoriy)" data-ru="ОКЭД (необязательно)" data-en="OKED (optional)">OKED (ixtiyoriy)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h4 data-uz="Aloqa ma'lumotlari" data-ru="Контактные данные" data-en="Contact information">Aloqa ma'lumotlari</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="text" id="legalDirector" required placeholder=" ">
+                                    <label data-uz="Rahbar FIO" data-ru="ФИО руководителя" data-en="Director full name">Rahbar FIO</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="legalPosition" required placeholder=" ">
+                                    <label data-uz="Lavozimi" data-ru="Должность" data-en="Position">Lavozimi</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="tel" id="legalPhone" required placeholder=" " value="+998">
+                                <label data-uz="Telefon raqami" data-ru="Номер телефона" data-en="Phone number">Telefon raqami</label>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h4 data-uz="Yetkazib berish" data-ru="Доставка" data-en="Delivery">Yetkazib berish</h4>
+                            <div class="form-group">
+                                <textarea id="legalAddress" rows="2" required placeholder=" "></textarea>
+                                <label data-uz="Yetkazib berish manzili" data-ru="Адрес доставки" data-en="Delivery address">Yetkazib berish manzili</label>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="legalComment" rows="2" placeholder=" "></textarea>
+                                <label data-uz="Izoh (ixtiyoriy)" data-ru="Комментарий (необязательно)" data-en="Comment (optional)">Izoh (ixtiyoriy)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="order-summary" id="legalOrderSummary">
+                        <!-- Order summary -->
+                    </div>
+
+                    <div class="contract-info">
+                        <div class="contract-info-item">
+                            <i class="fas fa-file-contract"></i>
+                            <div>
+                                <strong data-uz="Dogovor asosida" data-ru="На основе договора" data-en="Based on contract">Dogovor asosida</strong>
+                                <p data-uz="Buyurtma qabul qilingach, dogovor va hisob-faktura yuboriladi" data-ru="После подтверждения заказа будут отправлены договор и счет-фактура" data-en="After order confirmation, contract and invoice will be sent">Buyurtma qabul qilingach, dogovor va hisob-faktura yuboriladi</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-red btn-large btn-block" data-uz="Buyurtma berish" data-ru="Оформить заказ" data-en="Place order">Buyurtma berish</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content modal-small">
+            <div class="modal-body text-center">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2 data-uz="Buyurtma qabul qilindi!" data-ru="Заказ принят!" data-en="Order received!">Buyurtma qabul qilindi!</h2>
+                <p id="successMessage" data-uz="Tez orada siz bilan bog'lanamiz." data-ru="Мы свяжемся с вами в ближайшее время." data-en="We will contact you soon.">Tez orada siz bilan bog'lanamiz.</p>
+                <button class="btn btn-red" onclick="closeSuccessModal()" data-uz="Yopish" data-ru="Закрыть" data-en="Close">Yopish</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="menu.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
