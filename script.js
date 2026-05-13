@@ -569,64 +569,64 @@ function addToCart(productId, quantity) {
 }
 
 function updateCartUI() {
-   const cartCount = document.getElementById('cartCount');
-   const cartCountMobile = document.getElementById('cartCountMobile');
-   const cartItems = document.getElementById('cartItems');
-   const cartFooter = document.getElementById('cartFooter');
-   const cartTotal = document.getElementById('cartTotal');
-   const t = translations[currentLang];
+    const cartCount = document.getElementById('cartCount');
+    const cartCountMobile = document.getElementById('cartCountMobile');
+    const cartItems = document.getElementById('cartItems');
+    const cartFooter = document.getElementById('cartFooter');
+    const cartTotal = document.getElementById('cartTotal');
+    const t = translations[currentLang];
 
-   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-   cartCount.textContent = totalItems;
-   if (cartCountMobile) cartCountMobile.textContent = totalItems;
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCount.textContent = totalItems;
+    if (cartCountMobile) cartCountMobile.textContent = totalItems;
 
-   if (cart.length === 0) {
-       cartItems.innerHTML = `
-           <div class="empty-cart">
-               <i class="fas fa-shopping-cart"></i>
-               <p>${t.emptyCart}</p>
-           </div>
-       `;
-       cartFooter.style.display = 'none';
-   } else {
-       cartItems.innerHTML = cart.map((item, index) => {
-           const name = getProductName(item, currentLang);
-           const product = products.find(p => p.id === item.id);
-           const barrelAmount = product ? (getBarrelAmount(product, currentLang) || 25) : 25;
-           const itemTotal = item.quantity >= barrelAmount ? item.wholesalePrice * item.quantity : item.price * item.quantity;
-           const pricePerKg = item.quantity >= barrelAmount ? item.wholesalePrice : item.price;
+    if (cart.length === 0) {
+        cartItems.innerHTML = `
+            <div class="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <p>${t.emptyCart}</p>
+            </div>
+        `;
+        cartFooter.style.display = 'none';
+    } else {
+        cartItems.innerHTML = cart.map((item, index) => {
+            const name = getProductName(item, currentLang);
+            const product = products.find(p => p.id === item.id);
+            const barrelAmount = product ? (getBarrelAmount(product, currentLang) || 25) : 25;
+            const itemTotal = item.quantity >= barrelAmount ? item.wholesalePrice * item.quantity : item.price * item.quantity;
+            const pricePerKg = item.quantity >= barrelAmount ? item.wholesalePrice : item.price;
 
-           return `
-               <div class="cart-item">
-                   <img src="${item.image}" alt="${name}" class="cart-item-image">
-                   <div class="cart-item-details">
-                       <h4>${name}</h4>
-                       <div class="cart-item-price">${formatPrice(pricePerKg)} ${t.currencySymbol} × ${item.quantity}kg</div>
-                       <div class="cart-item-total">${formatPrice(itemTotal)} ${t.currencySymbol}</div>
-                   </div>
-                   <div class="cart-item-actions">
-                       <div class="quantity-control">
-                           <button onclick="updateQuantity(${index}, -1)">-</button>
-                           <span>${item.quantity}</span>
-                           <button onclick="updateQuantity(${index}, 1)">+</button>
-                       </div>
-                       <button class="remove-btn" onclick="removeFromCart(${index})" title="${t.remove}">
-                           <i class="fas fa-trash"></i>
-                       </button>
-                   </div>
-               </div>
-           `;
-       }).join('');
+            return `
+                <div class="cart-item">
+                    <img src="${item.image}" alt="${name}" class="cart-item-image">
+                    <div class="cart-item-details">
+                        <h4>${name}</h4>
+                        <div class="cart-item-price">${formatPrice(pricePerKg)} ${t.currencySymbol} × ${item.quantity}kg</div>
+                        <div class="cart-item-total">${formatPrice(itemTotal)} ${t.currencySymbol}</div>
+                    </div>
+                    <div class="cart-item-actions">
+                        <div class="quantity-control">
+                            <button onclick="updateQuantity(${index}, -1)">-</button>
+                            <span>${item.quantity}</span>
+                            <button onclick="updateQuantity(${index}, 1)">+</button>
+                        </div>
+                        <button class="remove-btn" onclick="removeFromCart(${index})" title="${t.remove}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
 
-       const total = cart.reduce((sum, item) => {
-           const product = products.find(p => p.id === item.id);
-           const barrelAmount = product ? (getBarrelAmount(product, currentLang) || 25) : 25;
-           return sum + (item.quantity >= barrelAmount ? item.wholesalePrice * item.quantity : item.price * item.quantity);
-       }, 0);
+        const total = cart.reduce((sum, item) => {
+            const product = products.find(p => p.id === item.id);
+            const barrelAmount = product ? (getBarrelAmount(product, currentLang) || 25) : 25;
+            return sum + (item.quantity >= barrelAmount ? item.wholesalePrice * item.quantity : item.price * item.quantity);
+        }, 0);
 
-       cartTotal.textContent = `${formatPrice(total)} ${t.currencySymbol}`;
-       cartFooter.style.display = 'block';
-   }
+        cartTotal.textContent = `${formatPrice(total)} ${t.currencySymbol}`;
+        cartFooter.style.display = 'block';
+    }
 }
 
 function updateQuantity(index, change) {
@@ -1238,7 +1238,6 @@ function initTelegramWebApp() {
 
         // BackButton handler
         tg.BackButton.onClick(() => {
-            // Close any open modal
             closeModal();
             closeUserTypeModal();
             closeIndividualCheckout();
@@ -1247,48 +1246,17 @@ function initTelegramWebApp() {
             tg.BackButton.hide();
         });
 
+        // ❌ MainButton ni yashirish (agar avval ko'rsatilgan bo'lsa)
+        tg.MainButton.hide();
+
         console.log('✅ Telegram WebApp initialized');
     }
 }
-
 // MainButton update for cart
-function updateTelegramMainButton() {
-    if (!tg) return;
 
-    if (cart.length > 0) {
-        const total = cart.reduce((sum, item) => {
-            const product = products.find(p => p.id === item.id);
-            const barrelAmount = product ? (getBarrelAmount(product, currentLang) || 25) : 25;
-            return sum + (item.quantity >= barrelAmount ? item.wholesalePrice * item.quantity : item.price * item.quantity);
-        }, 0);
-
-        tg.MainButton.setParams({
-            text: `${getTranslation('placeOrder')} (${formatPrice(total)} ${translations[currentLang].currencySymbol})`,
-            color: '#C40000',
-            textColor: '#ffffff',
-            is_visible: true
-        });
-        tg.MainButton.show();
-    } else {
-        tg.MainButton.hide();
-    }
-}
 
 // Override original updateCartUI to include Telegram MainButton
-const originalUpdateCartUI = updateCartUI;
-updateCartUI = function() {
-    originalUpdateCartUI();
-    updateTelegramMainButton();
-};
 
-// MainButton click handler
-if (tg) {
-    tg.MainButton.onClick(() => {
-        if (cart.length > 0) {
-            openUserTypeModal();
-        }
-    });
-}
 
 // Helper for Telegram button text
 function getTranslation(key) {
@@ -1305,12 +1273,14 @@ const originalOpenProductModal = openProductModal;
 openProductModal = function(productId) {
     originalOpenProductModal(productId);
     if (tg) tg.BackButton.show();
+    // ❌ MainButton ni ko'rsatmaslik
 };
 
 const originalCloseModal = closeModal;
 closeModal = function() {
     originalCloseModal();
     if (tg) tg.BackButton.hide();
+    // ❌ MainButton ni yashirish shart emas, chunki u hech qachon ko'rsatilmaydi
 };
 
 const originalOpenUserTypeModal = openUserTypeModal;
