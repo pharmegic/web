@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Web App Storage Tozalash</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            width: min(560px, 100%);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+        }
+        h1 { font-size: 24px; color: #111; margin-bottom: 12px; }
+        p { color: #555; line-height: 1.6; margin-bottom: 24px; }
+        .btn { width: 100%; padding: 16px; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 600; transition: transform 0.2s ease, background 0.2s ease; }
+        .btn-clear { background: #d32f2f; color: #fff; margin-bottom: 12px; }
+        .btn-clear:hover { transform: translateY(-2px); background: #b71c1c; }
+        .btn-reload { background: #1976d2; color: #fff; }
+        .btn-reload:hover { transform: translateY(-2px); background: #0d47a1; }
+        .info { background: #e3f2fd; color: #0d47a1; border-radius: 12px; padding: 16px; margin-bottom: 18px; }
+        .result { display: none; margin-top: 16px; padding: 16px; border-radius: 12px; background: #e8f5e9; color: #2e7d32; }
+        .result.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Telegram Web App Storage Tozalash</h1>
+        <p>Bu sahifa hozirgi brauzer / Telegram webview ichidagi <strong>localStorage</strong> va <strong>sessionStorage</strong> ma'lumotlarini tozalaydi. Bu deploy qilingan eski menu yoki cache qoldiqlarini yo'qotishda yordam beradi.</p>
+        <div class="info">
+            ⚠️ <strong>Diqqat:</strong> bu amal qaytarib bo'lmaydi. Saqlangan hamma sessiya va localStorage ma'lumotlari o'chiriladi.
+        </div>
+
+        <button class="btn btn-clear" onclick="clearStorage()">🧹 Telegram Storage-ni Tozalash</button>
+        <button class="btn btn-reload" onclick="reloadPage()">🔄 Sahifani Qayta Yuklash</button>
+
+        <div class="result" id="resultBox"></div>
+    </div>
+
+    <script>
+        function clearStorage() {
+            let removedKeys = [];
+
+            // PHARMEGIC va telegram web app uchun muhim kalitlarni o'chirish
+            const keys = [
+                'pharmegic_products',
+                'pharmegic_orders',
+                'pharmegic_cart',
+                'pharmegic_sourcing',
+                'pharmegic_admin_token',
+                'lastSyncTime',
+                'products_updated',
+                'products_last_update',
+                'lang'
+            ];
+
+            keys.forEach(key => {
+                if (localStorage.getItem(key) !== null) {
+                    localStorage.removeItem(key);
+                    removedKeys.push(key);
+                }
+            });
+
+            // Boshqa pharmegic bilan boshlangan kalitlar
+            for (let i = localStorage.length - 1; i >= 0; i--) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('pharmegic')) {
+                    localStorage.removeItem(key);
+                    removedKeys.push(key);
+                }
+            }
+
+            // To'liq localStorage va sessionStorage tozalash
+            try {
+                localStorage.clear();
+                sessionStorage.clear();
+            } catch (error) {
+                console.warn('Storage clear error:', error);
+            }
+
+            // Agar cookie bor bo'lsa, hozirgi cookie'larni o'chirishga harakat qilamiz
+            clearCookies();
+
+            const result = document.getElementById('resultBox');
+            result.innerHTML = `✅ Storage tozalandi. O'chirilgan kalitlar soni: ${removedKeys.length}. Sahifani qayta yuklang.`;
+            result.classList.add('show');
+        }
+
+        function clearCookies() {
+            const cookies = document.cookie.split(';');
+            cookies.forEach(cookie => {
+                const eqPos = cookie.indexOf('=');
+                const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+                if (name) {
+                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`; 
+                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${location.hostname}`;
+                }
+            });
+        }
+
+        function reloadPage() {
+            location.reload(true);
+        }
+    </script>
+</body>
+</html>
